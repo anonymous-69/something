@@ -27,6 +27,11 @@ router.get('/lol', function (req, res) {
     .then(function (response) {
         var response_data = response.data
         //removing \n
+        var json_obj = {"amazon_product":[]};
+
+
+
+
         var result = response_data.replace(/}\n&&&\n{/gm, ',');
         //removing the &&& in the end
         var result2 = result.replace(/&&&/gm,'')
@@ -35,15 +40,12 @@ router.get('/lol', function (req, res) {
         max_products = json_data.centerBelowPlus.data.value
         const $ = cheerio.load(max_products)
         const product_name = $('.s-access-title')
-
+        
         product_name.each(function(index,product){
             const product_title = $(product).text()
-            //const product_link = $("a").attr("href", product_title ).text()
-            //const product_title_url =  product_title.replace(/^[a-zA-Z0-9]/gm,'')
-            //const product_title_url2 =  product_title_url.replace(/\)/gm,'')
-            //const product_title_url3 = product_title_url2.
+            //const amazon_json = {"amazon_products":[{"name" : product_title, "product_url" :data[1], }]}
             console.log("---------------------------")
-            //var newData = JSON.stringify(product_title)
+
             var newData1 = product_title.replace(/\(/gm,'\\(')
             var newData2 = newData1.replace(/\)/gm,'\\)')
             var newData3 = newData2.replace(/\+/gm,'\\+')
@@ -51,24 +53,24 @@ router.get('/lol', function (req, res) {
 
             console.log(newData3)
 
-            //const regex = new RegExp('<a .*? title=\"' + newData3 +  '\\".*?href=\\"(.*?)\\">' , 'g')
-//
-            //console.log(regex)
-            //let m;
-            //console.log("outside while loop ")
-            //while ((m = regex.exec(max_products)) !== null) {
-            //    //console.log("inside while loop ")
-            //    // This is necessary to avoid infinite loops with zero-width matches
-            //    if (m.index === regex.lastIndex) {
-            //        regex.lastIndex++;
-            //    }
-            //    
-            //    // The result can be accessed through the `m`-variable.
-            //    m.forEach((match, groupIndex) => {
-            //        console.log(`Found match, group ${groupIndex}: ${match}`);
-            //    });
-            //}
-            
+            const regex_url = new RegExp('<a .*? title=\"' + newData3 +  '\\".*?href=\\"(.*?)\\">' , 'g')
+
+            console.log(regex_url)
+            let m;
+            console.log("outside while loop ")
+            if ((m = regex_url.exec(max_products)) !== null) {
+                
+                // This is necessary to avoid infinite loops with zero-width matches
+                if (m.index === regex_url.lastIndex) {
+                    regex.lastIndex++;
+                }
+                
+
+               
+            }
+            console.log("????????????")
+                console.log(m[1])
+    
     
             const regex_image = new RegExp('<img src=\\"(.*?.jpg)\\" .*? alt=\\"' +  newData3 + '\\" class=\\"s-access-image', 'g' )
             console.log(regex_image)
@@ -76,7 +78,7 @@ router.get('/lol', function (req, res) {
             console.log("outside2 while loop ")
 
             let data
-            while ((data = regex_image.exec(max_products))!== null) {
+            if ((data = regex_image.exec(max_products))!== null) {
                 console.log("----------------------------------------------")
                 // This is necessary to avoid infinite loops with zero-width matches
                 if (data.index === regex_image.lastIndex) {
@@ -85,14 +87,15 @@ router.get('/lol', function (req, res) {
                 }
                 console.log("lol")
                 console.log(data[1])
-                // The result can be accessed through the `m`-variable.
-                data.forEach((match, groupIndex) => {
-                    //console.log(`Found match, group ${groupIndex}: ${match}`);
-                    x= [match]
-                    //console.log(x)
-                });
+
                     
             }
+            console.log("```````````````````````````````````````````````")
+            
+            json_obj['amazon_product'].push({"name" : product_title, "product_url" :m[1], "product_image_url":data[1] });
+            json_str = JSON.stringify(json_obj)
+            
+            console.log(json_str)
 
 
     })
