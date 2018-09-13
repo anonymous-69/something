@@ -33,7 +33,8 @@ router.get('/lol', function (req, res) {
         headers:headers
       })
     .then(function (response) {
-        
+        //console.log(response)
+        console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
         var response_data = response.data
         //removing \n
         var json_obj = {"amazon_product":[]};
@@ -45,94 +46,130 @@ router.get('/lol', function (req, res) {
         //removing the &&& in the end
         var result2 = result.replace(/&&&/gm,'')
         var json_response_data = JSON.parse(result2)
+        //console.log(result2)
+        console.log("pppppppppppppppppppppppppppppppppppppppppppppppppppp")
         //scrapping the key having most of the products. 
         
-
-        max_products = json_response_data.centerBelowPlus.data.value
-        min_products = json_response_data.centerBelowPlus.data.value
-        //console.log(data_array[i])
-        data_array = [min_products,min_products ]
-        console.log("lol")
-        for (i in data_array){
-            console.log(data_array[i])
-        const $ = cheerio.load(data_array[i])
-        const product_name = $('.s-access-title')
         
-        product_name.each(function(index,product){
+        max_products = json_response_data.centerBelowPlus.data.value
+        min_products = json_response_data.centerMinus.data.value
+        //console.log(max_products)
+        if (max_products == null){
+            data_array = [min_products]
+            console.log('no data in  max_products')
+        }
+        else if (min_products == null){
+            data_array = [max_products]
+            console.log("no data in min_products")
+        }
+        else{
+            console.log("all data ")
+                    //console.log(data_array[i])
+            data_array = [max_products, min_products ]
             console.log("lol")
-            const product_title = $(product).text()
-            console.log(product_title)
-            console.log("---------------------------")
-
-            var newData1 = product_title.replace(/\(/gm,'\\(')
-            var newData2 = newData1.replace(/\)/gm,'\\)')
-            var newData3 = newData2.replace(/\+/gm,'\\+')
+            for (i in data_array){
+                //console.log(data_array[i])
+                const $ = cheerio.load(data_array[i])
+                const product_name = $('.s-access-title')
             
 
-            console.log(newData3)
-
-            const regex_url = new RegExp('<a .*? title=\"' + newData3 +  '\\".*?href=\\"(.*?)\\">' , 'g')
-
-            console.log(regex_url)
-            let m;
-            console.log("outside while loop ")
-            if ((m = regex_url.exec(data_array[i])) !== null) {
-                
-                // This is necessary to avoid infinite loops with zero-width matches
-                if (m.index === regex_url.lastIndex) {
-                    regex.lastIndex++;
-                }
-                
-
-               
-            }
-            else{
-                console.log("no url found")
-            }
-            console.log("????????????")
-                console.log(m[1])
-    
-    
-            const regex_image = new RegExp('<img src=\\"(.*?.jpg)\\" .*? alt=\\"' +  newData3 + '\\" class=\\"s-access-image', 'g' )
-            console.log(regex_image)
             
-            console.log("outside2 while loop ")
+                product_name.each(function(index,product){
 
-            let data
-            if ((data = regex_image.exec(data_array[i]))!== null) {
-                console.log("----------------------------------------------")
-                // This is necessary to avoid infinite loops with zero-width matches
-                if (data.index === regex_image.lastIndex) {
-                    regex_image.lastIndex++;
-                    
-                }
-                console.log("lol")
-                console.log(data[1])
+                    const product_title = $(product).text()
+                    console.log(product_title)
+                    console.log("---------------------------")
 
-                    
+
+                    //remove the sponsered result. 
+                    let m
+                    const sponsored_regex = /\[Sponsored]/g;
+                    if ((m = sponsored_regex.exec(product_title)) !== null) {
+                    // This is necessary to avoid infinite loops with zero-width matches
+                        if (m.index === sponsored_regex.lastIndex) {
+                            regex.lastIndex++;
+                        }
+                        console.log("alert, sponsored product found")
+
+                    }   
+
+                    else{
+
+
+
+                        var newData1 = product_title.replace(/\(/gm,'\\(')
+                        var newData2 = newData1.replace(/\)/gm,'\\)')
+                        var newData3 = newData2.replace(/\+/gm,'\\+')
+
+
+                        //console.log(newData3)
+
+                        const regex_url = new RegExp('<a .*? title=\"' + newData3 +  '\\".*?href=\\"(.*?)\\">' , 'g')
+
+                        console.log(regex_url)
+
+                        console.log("outside while loop ")
+                        if ((m = regex_url.exec(data_array[i])) !== null) {
+
+                            // This is necessary to avoid infinite loops with zero-width matches
+                            if (m.index === regex_url.lastIndex) {
+                                regex.lastIndex++;
+                            }
+
+                            console.log("????????????")
+                            //console.log(m[1])
+                        
+                        
+                            const regex_image = new RegExp('<img src=\\"(.*?.jpg)\\" .*? alt=\\"' +  newData3 + '\\" class=\\"s-access-image', 'g' )
+                            console.log(regex_image)
+
+                            console.log("outside2 while loop ")
+
+                            let data
+                            if ((data = regex_image.exec(data_array[i]))!== null) {
+                                console.log("----------------------------------------------")
+                                // This is necessary to avoid infinite loops with zero-width matches
+                                if (data.index === regex_image.lastIndex) {
+                                    regex_image.lastIndex++;
+
+                                }
+                                console.log("lol")
+                                //console.log(data[1])
+
+                                console.log("```````````````````````````````````````````````")
+
+                                json_obj['amazon_product'].push({"name" : product_title, "product_url" :m[1], "product_image_url":data[1] });
+                                json_str = JSON.stringify(json_obj)
+
+                                //console.log(json_str)  
+                            }
+                            else{
+                                console.lof("no image url found")
+                            }
+
+                        
+                        }
+                        else{
+                            console.log("no url found")
+                        }
+
+                    }
+
+                })
+
+
             }
-            else{
-                console.lof("no image url found")
-            }
-            console.log("```````````````````````````````````````````````")
-            
-            json_obj['amazon_product'].push({"name" : product_title, "product_url" :m[1], "product_image_url":data[1] });
-            json_str = JSON.stringify(json_obj)
-            
-            console.log(json_str)
 
-
-    })
         }
         
-    
-    res.send(max_products)
+    res.send(json_response_data)
+    //res.send(json_str)
 
         
 
       })
       .catch(function(err){
-          console.log(err)
+          console.log('this is error',err)
       })
     
     
