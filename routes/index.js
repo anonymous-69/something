@@ -9,7 +9,15 @@ var request = require('request');
 
 router.get('/lol', function (req, res) {
     //url= "https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=iphone&rh=i%3Aaps%2Ck%3Aiphone&fromHash=%2Fref%3Dnb_sb_noss_2%3Furl%3Dsearch-alias%253Daps%26field-keywords%3Dsamsing%2B%26sprefix%3Dsamsing%252Caps%252C380%26crid%3DXQW3OYZSXV6C&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536522016&atfLayout=list"
-    url = "https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss?url=node%3D1805560031&field-keywords=samsung&lo=electronics&rh=n%3A1805560031%2Ck%3Asamsung&fromHash=%2Fs%2Fref%3Dsr_nr_p_89_2%3Ffst%3Das%253Aoff%26rh%3Dn%253A976419031%252Cn%253A1389401031%252Cn%253A1389432031%252Cn%253A1805560031%252Ck%253Aiphone%252Cp_89%253AOnePlus%26keywords%3Diphone%26ie%3DUTF8%26qid%3D1536522399%26rnid%3D3837712031%26lo%3Delectronics&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536675080&atfLayout=image"
+    //samsung phones 
+    //url = "https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss?url=node%3D1805560031&field-keywords=samsung&lo=electronics&rh=n%3A1805560031%2Ck%3Asamsung&fromHash=%2Fs%2Fref%3Dsr_nr_p_89_2%3Ffst%3Das%253Aoff%26rh%3Dn%253A976419031%252Cn%253A1389401031%252Cn%253A1389432031%252Cn%253A1805560031%252Ck%253Aiphone%252Cp_89%253AOnePlus%26keywords%3Diphone%26ie%3DUTF8%26qid%3D1536522399%26rnid%3D3837712031%26lo%3Delectronics&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536675080&atfLayout=image"
+    //iphones 
+    //url = 'https://www.amazon.in/mn/search/ajax/gp/search/ref=sr_nr_p_89_1?fst=as%3Aoff&rh=n%3A976419031%2Cn%3A1389401031%2Cn%3A1389432031%2Cn%3A1805560031%2Ck%3Aiphone%2Cp_89%3AApple%7CiPhone&keywords=iphone&ie=UTF8&qid=1536786087&rnid=3837712031&fromHash=%2Fs%2Fref%3Dsr_nr_p_89_0%3Ffst%3Das%253Aoff%26rh%3Dn%253A976419031%252Cn%253A1389401031%252Cn%253A1389432031%252Cn%253A1805560031%252Ck%253Aiphone%252Cp_89%253AApple%26keywords%3Diphone%26ie%3DUTF8%26qid%3D1536786078%26rnid%3D3837712031&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536786098&atfLayout=list'
+    //1st sept , below 2 are not working 
+    //url = 'https://www.amazon.in/mn/search/ajax/&rh=n%3A976419031%2Cn%3A1389401031%2Cn%3A1389432031%2Ck%3Aphones%2Cp_n_operating_system_browse-bin%3A1485080031&page=2&keywords=phones&ie=UTF8&qid=1535808244&fromHash=%2Fgp%2Fsearch%2Fref%3Dsr_nr_p_n_operating_system_0%3Ffst%3Das%253Aoff%26rh%3Dn%253A976419031%252Cn%253A1389401031%252Cn%253A1389432031%252Ck%253Aphones%252Cp_n_operating_system_browse-bin%253A1485080031%26keywords%3Dphones%26ie%3DUTF8%26qid%3D1535808224&section=BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1535808434&atfLayout=list'
+    //url = "https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss?url=node%3D1805560031&field-keywords=jbl+speakers&rh=n%3A976419031%2Cn%3A1389401031%2Cn%3A1389432031%2Cn%3A1805560031%2Ck%3Ajbl+speakers&fromHash=%2Fs%2Fref%3Dsr_nr_p_n_feature_six_brow_2%3Ffst%3Das%253Aoff%26rh%3Dn%253A976419031%252Cn%253A1389401031%252Cn%253A1389432031%252Cn%253A1805560031%252Ck%253Avivo%252Cp_n_feature_six_browse-bin%253A6631754031%26keywords%3Dvivo%26ie%3DUTF8%26qid%3D1536341840%26rnid%3D6631751031&section=BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536357100&atfLayout=list"
+    url = 'https://www.amazon.in/mn/search/ajax/s/ref=sr_nr_p_89_0?fst=as%3Aoff&rh=n%3A1350384031%2Cn%3A1374515031%2Ck%3Awashing+machine+cleaning+powder%2Cp_89%3AWhirlpool&keywords=washing+machine+cleaning+powder&ie=UTF8&qid=1536825684&rnid=3837712031&fromHash=%2Fref%3Dnb_sb_ss_i_2_16%3Furl%3Dsearch-alias%253Daps%26field-keywords%3Dwashing%2Bmachine%2Bcleaning%2Bpowder%26sprefix%3Dwashing%2Bmachine%2B%252Caps%252C322%26crid%3D2Z7HAV5X3M10V&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536825697&atfLayout=grid'
+    
     headers =   {
         "Accept-Language": "en-US,en;q=0.5",
         "Content-Type": "application/json",
@@ -25,6 +33,7 @@ router.get('/lol', function (req, res) {
         headers:headers
       })
     .then(function (response) {
+        
         var response_data = response.data
         //removing \n
         var json_obj = {"amazon_product":[]};
@@ -35,15 +44,24 @@ router.get('/lol', function (req, res) {
         var result = response_data.replace(/}\n&&&\n{/gm, ',');
         //removing the &&& in the end
         var result2 = result.replace(/&&&/gm,'')
-        json_data = JSON.parse(result2)
+        var json_response_data = JSON.parse(result2)
         //scrapping the key having most of the products. 
-        max_products = json_data.centerBelowPlus.data.value
-        const $ = cheerio.load(max_products)
+        
+
+        max_products = json_response_data.centerBelowPlus.data.value
+        min_products = json_response_data.centerBelowPlus.data.value
+        //console.log(data_array[i])
+        data_array = [min_products,min_products ]
+        console.log("lol")
+        for (i in data_array){
+            console.log(data_array[i])
+        const $ = cheerio.load(data_array[i])
         const product_name = $('.s-access-title')
         
         product_name.each(function(index,product){
+            console.log("lol")
             const product_title = $(product).text()
-            //const amazon_json = {"amazon_products":[{"name" : product_title, "product_url" :data[1], }]}
+            console.log(product_title)
             console.log("---------------------------")
 
             var newData1 = product_title.replace(/\(/gm,'\\(')
@@ -58,7 +76,7 @@ router.get('/lol', function (req, res) {
             console.log(regex_url)
             let m;
             console.log("outside while loop ")
-            if ((m = regex_url.exec(max_products)) !== null) {
+            if ((m = regex_url.exec(data_array[i])) !== null) {
                 
                 // This is necessary to avoid infinite loops with zero-width matches
                 if (m.index === regex_url.lastIndex) {
@@ -67,6 +85,9 @@ router.get('/lol', function (req, res) {
                 
 
                
+            }
+            else{
+                console.log("no url found")
             }
             console.log("????????????")
                 console.log(m[1])
@@ -78,7 +99,7 @@ router.get('/lol', function (req, res) {
             console.log("outside2 while loop ")
 
             let data
-            if ((data = regex_image.exec(max_products))!== null) {
+            if ((data = regex_image.exec(data_array[i]))!== null) {
                 console.log("----------------------------------------------")
                 // This is necessary to avoid infinite loops with zero-width matches
                 if (data.index === regex_image.lastIndex) {
@@ -90,6 +111,9 @@ router.get('/lol', function (req, res) {
 
                     
             }
+            else{
+                console.lof("no image url found")
+            }
             console.log("```````````````````````````````````````````````")
             
             json_obj['amazon_product'].push({"name" : product_title, "product_url" :m[1], "product_image_url":data[1] });
@@ -99,9 +123,12 @@ router.get('/lol', function (req, res) {
 
 
     })
+        }
+        
     
     res.send(max_products)
 
+        
 
       })
       .catch(function(err){
@@ -236,9 +263,9 @@ router.get('/d', function(req,res){
         var result = response_data.replace(/}\n&&&\n{/gm, ',');
         //removing the &&& in the end
         var result2 = result.replace(/&&&/gm,'')
-        json_data = JSON.parse(result2)
+        json_response_data = JSON.parse(result2)
         //scrapping the key having most of the products. 
-        max_products = json_data.centerBelowPlus.data.value
+        max_products = json_response_data.centerBelowPlus.data.value
     
         console.log(typeof(max_products))
         //const regex = /<a .*? title= \"Apple iPhone X \(Silver, 64GB\)\".*?href=\"(.*?)\">/g;
@@ -304,9 +331,9 @@ router.get('/d', function(req,res){
             var result = response_data.replace(/}\n&&&\n{/gm, ',');
             //removing the &&& in the end
             var result2 = result.replace(/&&&/gm,'')
-            json_data = JSON.parse(result2)
+            json_response_data = JSON.parse(result2)
             //scrapping the key having most of the products. 
-            max_products = json_data.centerBelowPlus.data.value
+            max_products = json_response_data.centerBelowPlus.data.value
             //const $ = cheerio.load(max_products)
             //const product_name = $('.s-access-title')
 
@@ -481,9 +508,9 @@ router.get('/lssol', function (req, res) {
         var result = response_data.replace(/}\n&&&\n{/gm, ',');
         //removing the &&& in the end
         var result2 = result.replace(/&&&/gm,'')
-        json_data = JSON.parse(result2)
+        json_response_data = JSON.parse(result2)
         //scrapping the key having most of the products. 
-        max_products = json_data.centerBelowPlus.data.value
+        max_products = json_response_data.centerBelowPlus.data.value
         const $ = cheerio.load(max_products)
         const product_name = $('.s-access-title')
 
@@ -560,11 +587,11 @@ router.get('/lssol', function (req, res) {
     //const product_leink = $('a Apple iPhone X').attr('href')
     //const product_leink = $("a").attr("title", "Apple iPhone X (Space Grey, 256GB)" ).text()
     //product_link= $('title=\"Apple iPhone X \(Space Grey, 256GB\)\"').attr('href');
-    //json_data =  $.serializeArray()
+    //json_response_data =  $.serializeArray()
 
     //'<a title="Apple iPhone X (Space Grey, 256GB) ".*?href="(.*?)"'
     //product_leink = $('a \"Apple iPhone X \(Space Grey, 256GB\"\)').attr('href')
-    //console.log("yoooo:", json_data)
+    //console.log("yoooo:", json_response_data)
     res.send(max_products)
         //const product_link = $()
         //res.send(max_products)  
