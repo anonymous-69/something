@@ -14,7 +14,9 @@ var request = require('request');
 
 
 router.get('/lol', function(req, res,next){
-    url =  "https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xiaomi"
+    search = 'ps4+games'
+    
+    url =  `https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}`
     //view-source:https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xiaomi&rh=i%3Aaps%2Ck%3Axiaomi
     headers =   {
         "Accept-Language": "en-US,en;q=0.5",
@@ -33,11 +35,11 @@ router.get('/lol', function(req, res,next){
     .then(function (response){
         //console.log(response.data)
         amazon_webpage = response.data
-        //&rh=i%3Aaps%2Ck%3Axbox+games+
-       // i%3Aapparel%2Cn%3A1571271031%2Cp_4%3AJust%20F%20by%20Jacqueline%20Fernandez%2Cp_98%3A10440597031
-        //&fromHash=%2Fref%3Dsr_il_ti_videogames%3Ffst%3Das%253Aon%26rh%3Dk%253Aps4%2Bgames%252Cn%253A976460031%252Cn%253A2591138031%252Cn%253A2591141031%26keywords%3Dps4%2Bgames%26ie%3DUTF8%26qid%3D1536874220%26lo%3Dvideogames
-        //&oqid=1536874409
-        regex_rh= /rh=(.*?)&.*?xiaomi/g
+
+        //if there is + in search, it will them be replaced by /+
+        var search2 = search.replace(/\+/gm,'\\+')
+        regex_rh = new RegExp('rh=(.*?)&.*?'+ search2 , 'g')
+        console.log(regex_rh)
         let x;
         if ((x = regex_rh.exec(amazon_webpage)) !== null) {
                 if (x.index === regex_rh.lastIndex) {
@@ -46,14 +48,21 @@ router.get('/lol', function(req, res,next){
             console.log(x[1])
         }
         let y 
-        regex_qid = /qid=(.*?)\">/
-        if ((y = regex_rh.exec(amazon_webpage)) !== null) {
-            if (y.index === regex_rh.lastIndex) {
+        regex_qid = /qid=(.*?)\"/g
+        if ((y = regex_qid.exec(amazon_webpage)) !== null) {
+            if (y.index === regex_qid.lastIndex) {
                 regex.lastIndex++;
             }
-        console.log(y[1])
+        console.log("222")
+        console.log("this is y,   ", y[1])
         }
+        z = encodeURIComponent("ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=books+")
+        console.log(z)
+        url =  `https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}+&rh=${x[1]}&fromHash=${z}&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=${y[1]}&atfLayout=list`
         //https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xiaomi&rh=i%3Aaps%2Ck%3Axiaomi&fromHash=%2Fref%3Dnb_sb_noss_2%3Furl%3Dsearch-alias%253Daps%26field-keywords%3Dpixel%26rh%3Di%253Aaps%252Ck%253Apixel&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536922216&atfLayout=list
+        console.log("--------------------------------------------------")
+        console.log(url)
+        console.log("--------------------------------------------------")
         res.send('lol')
     })
     
@@ -113,9 +122,9 @@ router.get('/lol2', function (req, res) {
     //url = 'https://www.amazon.in/mn/search/ajax/s/ref=sr_nr_p_89_0?fst=as%3Aoff&rh=n%3A1350384031%2Cn%3A1374515031%2Ck%3Awashing+machine+cleaning+powder%2Cp_89%3AWhirlpool&keywords=washing+machine+cleaning+powder&ie=UTF8&qid=1536825684&rnid=3837712031&fromHash=%2Fref%3Dnb_sb_ss_i_2_16%3Furl%3Dsearch-alias%253Daps%26field-keywords%3Dwashing%2Bmachine%2Bcleaning%2Bpowder%26sprefix%3Dwashing%2Bmachine%2B%252Caps%252C322%26crid%3D2Z7HAV5X3M10V&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536825697&atfLayout=grid'
     //urls for testing 
     //url = "https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss?url=node%3D1389432031&field-keywords=ps4+games&rh=n%3A976419031%2Cn%3A1389401031%2Cn%3A1389432031%2Ck%3Aps4+games&fromHash=%2Fgp%2Fsearch%2Fref%3Dsr_nr_p_89_0%3Ffst%3Das%253Aoff%26rh%3Dn%253A976419031%252Cn%253A1389401031%252Cn%253A1389432031%252Ck%253Aiphones%252Cp_89%253AApple%26keywords%3Diphones%26ie%3DUTF8%26qid%3D1536865785%26rnid%3D3837712031&section=BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536866186&atfLayout=grid"
-    //url = 'https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss?url=node%3D1389432031&field-keywords=xbox+games&lo=videogames&section=BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&atfLayout=list'
+    //url = 'https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss?url=node%3D1389432031&field-keywords=mouse+&lo=videogames&section=BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&atfLayout=list'
     //url = 'https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xbox+games+&lo=videogames&rh=i%3Aaps%2Ck%3Axbox+games+&fromHash=%2Fref%3Dsr_il_ti_videogames%3Ffst%3Das%253Aon%26rh%3Dk%253Aps4%2Bgames%252Cn%253A976460031%252Cn%253A2591138031%252Cn%253A2591141031%26keywords%3Dps4%2Bgames%26ie%3DUTF8%26qid%3D1536874220%26lo%3Dvideogames&section=BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536357100&atfLayout=grid'
-    url = "https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=pixel&rh=i%3Aaps%2Ck%3Apixel&fromHash=%2Fref%3Dnb_sb_noss_2%3Furl%3Dsearch-alias%253Daps%26field-keywords%3Dmoto%2B%26rh%3Di%253Aaps%252Ck%253Amoto%2B&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536920521&atfLayout=list"
+    url = "ttps://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=ps4+games+&rh=n%3A2591141031%2Ck%3Aps4+games&fromHash=ref%3Dnb_sb_noss_2%3Furl%3Dsearch-alias%253Daps%26field-keywords%3Dbooks%2B&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=1536936862&amp;sr=8-1-spons#productPromotions&atfLayout=list"
     headers =   {
         "Accept-Language": "en-US,en;q=0.5",
         "Content-Type": "application/json",
@@ -244,7 +253,7 @@ router.get('/lol2', function (req, res) {
     //this is all the poducts, links, images 
     //res.send(json_str)
     //this is just the raw html 
-    res.send(max_products)
+    res.send(min_products)
         
 
       })
