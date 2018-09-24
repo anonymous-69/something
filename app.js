@@ -25,10 +25,11 @@ app.use(function( req,res,next){
 
 
 
-let index = require('./routes/index');
-app.use('/', index);
+let amazon = require('./routes/amazon');
+app.use('/', amazon);
 
-
+let flipkart = require('./routes/flipkart');
+app.use('/', flipkart);
 
 //before respose middleware 
 app.use(function( req,res,next){
