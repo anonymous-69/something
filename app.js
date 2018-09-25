@@ -1,3 +1,5 @@
+
+"use strict"
 // Boilerplate code for the express app. 
 var express = require('express')
 var bodyParser = require('body-parser')
@@ -31,6 +33,10 @@ app.use('/', amazon);
 let flipkart = require('./routes/flipkart');
 app.use('/', flipkart);
 
+
+let paytm = require('./routes/paytm');
+app.use('/', paytm);
+
 //before respose middleware 
 app.use(function( req,res,next){
     //console.log("below middleware")
@@ -55,7 +61,7 @@ app.use(function( req,res,next){
 
 
 
-app.listen(5000, function(){
+app.listen(4000, function(){
 	console.log("server started on port 5000....")
 })
 

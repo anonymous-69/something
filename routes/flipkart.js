@@ -1,3 +1,4 @@
+"use strict"
 const express = require('express');
 const router = express.Router();
 const Regex = require('regex');
@@ -6,11 +7,6 @@ const axios = require('axios')
 const JSON = require('circular-json');
 var request = require('request');
  
-
-
-
-
-
 
 router.get('/lol1', function(req,res){
     url = "https://www.flipkart.com/api/4/page/fetch"
@@ -28,11 +24,7 @@ router.get('/lol1', function(req,res){
         }
     
         //headers = JSON.stringify(header)
-        
-        
-    
-json_string =   {"pageUri":"/search?q=lg&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off","requestContext":{"type":"BROWSE_PAGE","ssid":"oy3axqnk280000001536022950239","sqid":"i4lnzrvq280000001536022950239"},"pageContext":{"paginatedFetch":false,"pageNumber":1}}  
-        
+               
     psayload = {
         "pageUri":"/search?q=washing%20machine&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off",
         "pageContext":{
@@ -81,6 +73,7 @@ json_string =   {"pageUri":"/search?q=lg&otracker=search&otracker1=search&market
                             console.log("no products")
                         }
                         else{
+                            //Add if-else here, if in case something breaks. 
                             product_title = x.products[0].productInfo.value.titles.title
                             price = x.products[0].productInfo.value.pricing.finalPrice.decimalValue
                             ratings = x.products[0].productInfo.value.rating.average
@@ -98,7 +91,7 @@ json_string =   {"pageUri":"/search?q=lg&otracker=search&otracker1=search&market
                             var image_url = String(image_quality) 
                             console.log(typeof(image_url))
                             number_of_products = number_of_products+1 
-                            flipkart_json_obj['flipkart_product'].push({"product_name" : product_title, "product_url" :product_url, "product_rating": ratings,"product_image_url":image_quality, "product_price":price,"product_total_people_rated" : total_rating_number, });
+                            flipkart_json_obj['flipkart_product'].push({"product_name" : product_title, "product_url" :product_url, "product_rating": ratings,"product_image_url":image_quality, "product_price":price,"product_total_people_rated" : total_rating_number });
                             flipkart_json_obj['number_of_products'] = number_of_products
                             
                             console.log(number_of_products)
@@ -126,19 +119,6 @@ module.exports = router;
 
 
 
-
-
-//{"living":{
-//    "animals":{
-//        "lion":"wild", 
-//        "tiger":{
-//            "index": "1"
-//        }
-//    }
-//}}
-
-
-
         //iphone 
         //"ssid":"hdeulcnzio0000001537687391769",
         //"sqid":"oh1lu4h7nk0000001537687391769"
@@ -160,3 +140,4 @@ module.exports = router;
         //F&D speakers 
         //"ssid":"ba2ykk1khs0000001537687701532",
         //"sqid":"leq6atohow0000001537687728192"
+
