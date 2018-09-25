@@ -210,19 +210,32 @@ router.get('/lol', function(req, res,next){
 
                     //Grabbing ratings
                     
-                    const regex_rating = new RegExp(newData3 + '<.*?(.*?)out of 5 stars', 'gm')
+                    const regex_rating = new RegExp('>' + newData3 + '<.*?(.*?) out of 5', 'gm')
                     console.log(regex_rating)
                     let rating;
                     if ((rating = regex_rating.exec(data_array[i]))!== null) {
-                        console.log("----------------------------------------------")
-                        // This is necessary to avoid infinite loops with zero-width matches
+            
                         if (rating.index === regex_rating.lastIndex) {
                             regex_rating.lastIndex++;
                         }
-                        product_ratings = rating[1]
-                        console.log("11111111111111111111111111")
-                        console.log(rating[1])
-                        console.log("111111111111111111111111111")
+                        //rating gives some long ass string.   
+                        ratings_string = rating[1].split(" ").splice(-1)[0];
+                        // ratings_string gives span class="a-icon-alt"
+                        regex_rating_number = /.*?>(.*)/gm;
+                        let rating_number
+                        if ((rating_number = regex_rating_number.exec(ratings_string))!== null) {
+
+                            if (rating_number.index === regex_rating_number.lastIndex) {
+                                regex_rating_number.lastIndex++;
+                            }
+                        
+                        product_ratings = rating_number[1]
+                        console.log(product_ratings)
+                        }
+                        else{
+                            product_ratings = "unable to find ratings string- span class=\"a-icon-alt\" "
+                        }
+                    
                     }
                     else{
                         console.log("Unable to grab ratings")
@@ -259,7 +272,6 @@ router.get('/lol', function(req, res,next){
           console.log('this is error',err)
       })
 })
-
 
 
 
