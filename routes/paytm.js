@@ -1,4 +1,4 @@
-"use strict"
+//"use strict"
 const express = require('express');
 const router = express.Router();
 const Regex = require('regex');
@@ -8,9 +8,9 @@ const JSON = require('circular-json');
 var request = require('request');
 
 
-router.get('/lol',function(req,res,next){
+router.get('/paytm',function(req,res,next){
     console.log("hitting paytm route")
-    var  search_term = "ps4 games"
+    var  search_term = "sneakers"
     var  number_of_products =  ""
     var  search = encodeURI(search_term);
     url_paytm = `https://middleware.paytmmall.com/search?channel=web&child_site_id=6&site_id=2&version=2&userQuery=${search}&from=organic&cat_tree=1&page_count=1&items_per_page=32&resolution=960x720&quality=high&curated=1&_type=1`

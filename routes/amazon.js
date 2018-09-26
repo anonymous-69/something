@@ -6,10 +6,10 @@ const cheerio = require('cheerio');
 const axios = require('axios')
 const JSON = require('circular-json');
 const request = require('request');
-
+const pretty = require('pretty');
 
 router.get('/amazon', function(req, res,next){
-     let search = 'xbox+games'
+     let search = 'ps4'
     //add payload to the amazon website. 
     let url_amazon =  `https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}`
     //https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xiaomi&rh=i%3Aaps%2Ck%3Axiaomi
@@ -57,7 +57,7 @@ router.get('/amazon', function(req, res,next){
             if (qid.index === regex_qid.lastIndex) {
                 regex.lastIndex++;
             }
-        console.log("222")
+        
         var qid_value =  qid[1]
         console.log("this is y,   ", qid[1])
         }
@@ -108,7 +108,7 @@ router.get('/amazon', function(req, res,next){
         console.log("pppppppppppppppppppppppppppppppppppppppppppppppppppp")
         //scrapping the key having most of the products. 
                 
-        //console.log(max_products)
+        
         console.log("HELP")
         if (!("centerBelowPlus" in json_response_data)){
             let min_product_whitespace = json_response_data.centerMinus.data.value
@@ -156,16 +156,17 @@ router.get('/amazon', function(req, res,next){
                     console.log("alert, sponsored product found")
                 }   
                 else{
-                    let newData1 = product_title.replace(/\(/gm,'\\(')
+                    let newData0 = product_title.replace(/\(/gm,'\\(')
+                    let newData1 = newData0.replace(/\//gm,'\\/')
                     let newData2 = newData1.replace(/\)/gm,'\\)')
                     let newData3 = newData2.replace(/\+/gm,'\\+')
                     let newData4 = newData3.replace(/\[/gm,'\\[')
                     let newData5 = newData4.replace(/\[/gm,'\\]')
                     let newData6 = newData5.replace(/\|/gm,'\\|')
-
+                    let newData7 = newData6.replace(/\./gm,'//.')
                     //Grabbing URL
 
-                    const regex_url = new RegExp('<a .*? title=\"' + newData6 +  '\\".*?href=\\"(.*?)\\">' , 'g')
+                    const regex_url = new RegExp('<a .*? title=\"' + newData7 +  '\\".*?href=\\"(.*?)\\">' , 'g')
                     console.log(regex_url)
                     let url
                     if ((url = regex_url.exec(data_array[i])) !== null) {
@@ -183,20 +184,23 @@ router.get('/amazon', function(req, res,next){
                     }
                     
                     //Grabbing Image URL 
-                    const regex_image = new RegExp('<img src=\\"(.*?.jpg)\\" .*? alt=\\"' +  newData6 + '\\" class=\\"s-access-image', 'g' )
+                    const regex_image = new RegExp('<img src=\\"(.*?)\\" srcset=\\".*?\\" width=\\".*?\\" height=\\".*?\\" alt=\\"'+ newData7 + '\\"', 'g' )
                     console.log(regex_image)
                     console.log("outside2 while loop ")
                     //Grabbing image url 
                     
                     let image_url
-                    if ((image_url = regex_image.exec(data_array[i]))!== null) {
+                    let beautify_html = pretty(data_array[i]);
+                    if ((image_url = regex_image.exec(beautify_html))!== null) {
                         console.log("----------------------------------------------")
                         // This is necessary to avoid infinite loops with zero-width matches
                         if (image_url.index === regex_image.lastIndex) {
                             regex_image.lastIndex++;
                         }
                         var product_image_url = image_url[1]
-                        //console.log(image_url[1])
+                        console.log("99999999999999999999999999999999999999")
+                        console.log(product_image_url)
+                        console.log("99999999999999999999999999999999999999")
                         
                     }
                     else{
@@ -206,7 +210,7 @@ router.get('/amazon', function(req, res,next){
                     }
                     //Grabbing price. 
                     let price;
-                    const regex_price = new RegExp(newData6 + '.*?<span class="currencyINR">.*?<\\/span>(.*?)<\\/span>', 'g' )
+                    const regex_price = new RegExp(newData7 + '.*?<span class="currencyINR">.*?<\\/span>(.*?)<\\/span>', 'g' )
                     console.log(regex_price)
                     if ((price = regex_price.exec(data_array[i]))!== null) {
                         // This is necessary to avoid infinite loops with zero-width matches
@@ -228,7 +232,7 @@ router.get('/amazon', function(req, res,next){
 
                     //Grabbing ratings
                     
-                    const regex_rating = new RegExp('>' + newData6 + '<.*?(.*?) out of 5', 'gm')
+                    const regex_rating = new RegExp('>' + newData7 + '<.*?(.*?) out of 5', 'gm')
                     console.log(regex_rating)
                     let rating;
                     if ((rating = regex_rating.exec(data_array[i]))!== null) {
@@ -294,3 +298,11 @@ router.get('/amazon', function(req, res,next){
 
 
 module.exports = router;
+
+
+
+//https://images-eu.ssl-images-amazon.com/images/I/41U1z70fi-L._AC_US218_.jpg
+
+
+
+//https://images-eu.ssl-images-amazon.com/images/I/51xn3k9d0FL._AC_US218_.jpg

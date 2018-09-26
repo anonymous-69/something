@@ -1,4 +1,4 @@
-"use strict"
+//"use strict"
 const express = require('express');
 const router = express.Router();
 const Regex = require('regex');
@@ -8,7 +8,7 @@ const JSON = require('circular-json');
 var request = require('request');
  
 
-router.get('/lol1', function(req,res){
+router.get('/flipkart', function(req,res){
     url = "https://www.flipkart.com/api/4/page/fetch"
     headers =   {
         "Accept": "*/*",
@@ -26,7 +26,7 @@ router.get('/lol1', function(req,res){
         //headers = JSON.stringify(header)
                
     psayload = {
-        "pageUri":"/search?q=washing%20machine&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off",
+        "pageUri":"/search?q=sneakers&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off",
         "pageContext":{
             "paginatedFetch":false,
             "pageNumber":1,
