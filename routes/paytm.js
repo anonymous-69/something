@@ -1,29 +1,35 @@
-//"use strict"
+"use strict"
 const express = require('express');
 const router = express.Router();
 const Regex = require('regex');
 const cheerio = require('cheerio');
 const axios = require('axios')
 const JSON = require('circular-json');
-var request = require('request');
+const request = require('request');
 
 
 router.get('/paytm',function(req,res,next){
     console.log("hitting paytm route")
-    var  search_term = "sneakers"
+    const  search_term = "sneakers"
     var  number_of_products =  ""
-    var  search = encodeURI(search_term);
-    url_paytm = `https://middleware.paytmmall.com/search?channel=web&child_site_id=6&site_id=2&version=2&userQuery=${search}&from=organic&cat_tree=1&page_count=1&items_per_page=32&resolution=960x720&quality=high&curated=1&_type=1`
+    const  search = encodeURI(search_term);
+    const url_paytm = `https://middleware.paytmmall.com/search?channel=web&child_site_id=6&site_id=2&version=2&userQuery=${search}&from=organic&cat_tree=1&page_count=1&items_per_page=32&resolution=960x720&quality=high&curated=1&_type=1`
     console.log(url_paytm)
-    headers =   {
+    const headers = {
+        "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.5",
         "Content-Type": "application/json",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
         "X-user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36 FKUA/website/41/website/Desktop",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Connection": "keep-alive"
+        "Referer": "https://paytmmall.com/",
+        "Connection": "keep-alive",
+        "Host":"middleware.paytmmall.com",
+        "Origin": "https://paytmmall.com"
         }
 
+
+        //do someh=thing then response comes none. like literally none. Basically when the server blocks you!
     var response = axios({
         method: 'post',
         url: url_paytm,
@@ -33,12 +39,12 @@ router.get('/paytm',function(req,res,next){
         console.log("lol")
         number_of_products = 0 
         var paytm_json_obj = {"paytm_product":[]};
-        products = response.data.grid_layout
+        let products = response.data.grid_layout
         products.map(function(item, index){
-            product_name = item.name
-            product_url = item.url
-            product_price = item.offer_price
-            product_image_url = item.image_url
+            let product_name = item.name
+            let product_url = item.url
+            let product_price = item.offer_price
+            let product_image_url = item.image_url
             console.log(product_name)
             console.log(product_image_url)
             console.log(product_price)     
@@ -62,52 +68,6 @@ router.get('/paytm',function(req,res,next){
 
 module.exports = router;
 
-
-
-
-
-
-
-
-
-//https://middleware.paytmmall.com/search?
-//channel=web
-//&child_site_id=6
-//&site_id=2
-//&version=2
-//&userQuery=xbox%20games
-//&from=organic
-//&cat_tree=1
-//&page_count=1
-//&items_per_page=32
-//&resolution=960x720
-//&quality=high
-//&curated=1
-//&_type=1
-//
-//
-//
-//
-//https://middleware.paytmmall.com/search
-//?channel=web
-//&child_site_id=6   
-//&site_id=2
-//&version=2
-//&userQuery=iphone%20
-//&from=organic
-//&cat_tree=1
-//&page_count=1
-//&items_per_page=32
-//&resolution=960x720
-//&quality=high
-//&curated=1
-//&_type=1
-//
-
-
-
-
-//https://middleware.paytmmall.com/search?channel=web&child_site_id=6&site_id=2&version=2&userQuery=samsung&from=organic&cat_tree=1&page_count=1&items_per_page=32&resolution=960x720&quality=high&curated=1&_type=1
 
 
 

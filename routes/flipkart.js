@@ -1,4 +1,4 @@
-//"use strict"
+"use strict"
 const express = require('express');
 const router = express.Router();
 const Regex = require('regex');
@@ -9,8 +9,8 @@ var request = require('request');
  
 
 router.get('/flipkart', function(req,res){
-    url = "https://www.flipkart.com/api/4/page/fetch"
-    headers =   {
+    const url = "https://www.flipkart.com/api/4/page/fetch"
+    const headers =   {
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.5",
         "Content-Type": "application/json",
@@ -25,78 +25,74 @@ router.get('/flipkart', function(req,res){
     
         //headers = JSON.stringify(header)
                
-    psayload = {
-        "pageUri":"/search?q=sneakers&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off",
+    const payload = {
+        "pageUri":"/search?q=sneakers+&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off",
         "pageContext":{
             "paginatedFetch":false,
             "pageNumber":1,
             "fetchSeoData":true
         }
         ,"requestContext":{
-            "type":"BROWSE_PAGE",
-            "ssid":"ba2ykk1khs0000001537687701532",
-            "sqid":"leq6atohow0000001537687728192"
-        }
-    }
+            "type":"BROWSE_PAGE","ssid":"77tw95kkog0000001537966890125","sqid":"j5lw9681gw0000001537966890125"}}
     //payload = JSON.stringify(a)
     var response = axios({
         method: 'post',
         url: url,
         headers:headers,
-        data: psayload
+        data: payload
       })
     .then(function (response) {
         var response_data = response.data
 
         console.log("uo")
         
-        products = response_data.RESPONSE.slots
+        var products = response_data.RESPONSE.slots
         //lol = products[8].widget.data.products[0].productInfo.value.titles.title
         //console.log(lol)
         console.log(typeof(products))
         var number_of_products
         var flipkart_json_obj = {"flipkart_product":[]};
-        number_of_products = 0
+        var number_of_products = 0
         products.map(function(item, index){
             if (!("widget" in item )){
                 console.log("no widget")
                 }
                 else{
-                    y = item.widget
-                    //console.log(item.widget.data)
+                    var y = item.widget
+                    
                     if (!("data" in  y )){
                         console.log("no data")
                     }
                     else{
-                        x = item.widget.data
+                        var x = item.widget.data
                         if (!("products" in x)){
                             console.log("no products")
                         }
                         else{
-                            //Add if-else here, if in case something breaks. 
-                            product_title = x.products[0].productInfo.value.titles.title
-                            price = x.products[0].productInfo.value.pricing.finalPrice.decimalValue
-                            ratings = x.products[0].productInfo.value.rating.average
-                            total_rating_number = x.products[0].productInfo.value.rating.count // no of users who gave it rating 
-                            product_url = x.products[0].productInfo.value.smartUrl
-                            product_image = x.products[0].productInfo.value.media.images[0].url
-                            //console.log(product_image)
+                            let i 
+                            for (i in x.products){
+                                console.log(i)
+                                var product_title = x.products[i].productInfo.value.titles.title
+                                var price = x.products[i].productInfo.value.pricing.finalPrice.decimalValue
+                                var ratings = x.products[i].productInfo.value.rating.average
+                                var total_rating_number = x.products[i].productInfo.value.rating.count // no of users who gave it rating 
+                                var product_url = x.products[i].productInfo.value.smartUrl
+                                var product_image = x.products[i].productInfo.value.media.images[0].url
+                                //console.log(product_image)
 
-
-                            var image_height = product_image.replace(/\{@height\}/gm, '832');
-                            var image_width = image_height.replace(/\{@width\}/gm, '832');
-                            var image_quality = image_width.replace(/\{@quality\}/gm, '70');
-                            console.log(image_quality)
-                            var image_url
-                            var image_url = String(image_quality) 
-                            console.log(typeof(image_url))
-                            number_of_products = number_of_products+1 
-                            flipkart_json_obj['flipkart_product'].push({"product_name" : product_title, "product_url" :product_url, "product_rating": ratings,"product_image_url":image_quality, "product_price":price,"product_total_people_rated" : total_rating_number });
-                            flipkart_json_obj['number_of_products'] = number_of_products
+                                const image_height = product_image.replace(/\{@height\}/gm, '832');
+                                const image_width = image_height.replace(/\{@width\}/gm, '832');
+                                const image_quality = image_width.replace(/\{@quality\}/gm, '70');
+                                console.log(image_quality)
+                                //let image_url
+                                let image_url = String(image_quality) 
+                                console.log(typeof(image_url))
+                                number_of_products = number_of_products+1 
+                                flipkart_json_obj['flipkart_product'].push({"product_name" : product_title, "product_url" :product_url, "product_rating": ratings,"product_image_url":image_quality, "product_price":price,"product_total_people_rated" : total_rating_number });
+                                flipkart_json_obj['number_of_products'] = number_of_products
+                                console.log(number_of_products)
                             
-                            console.log(number_of_products)
-                            
-
+                            }
                         }
                     }
                     console.log("_______________________________--")
@@ -105,7 +101,7 @@ router.get('/flipkart', function(req,res){
         })
    
 
-        json_str = JSON.stringify(flipkart_json_obj)
+        let json_str = JSON.stringify(flipkart_json_obj)
         res.send(json_str)
         })
     .catch(function(err){

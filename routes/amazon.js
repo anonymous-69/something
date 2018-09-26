@@ -11,7 +11,7 @@ const pretty = require('pretty');
 router.get('/amazon', function(req, res,next){
      let search = 'ps4'
     //add payload to the amazon website. 
-    let url_amazon =  `https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}`
+    let url_amazon =  `https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}`
     //https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xiaomi&rh=i%3Aaps%2Ck%3Axiaomi
     let headers =   {
         "Accept-Language": "en-US,en;q=0.5",
@@ -67,7 +67,7 @@ router.get('/amazon', function(req, res,next){
         }
         let z = encodeURIComponent("ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=books+")
         console.log(z)
-        let url =  `https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}+&rh=${rh_value}&fromHash=${z}&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=${qid[1]}&atfLayout=list`
+        let url =  `https://www.amazon.com/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}+&rh=${rh_value}&fromHash=${z}&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=${qid[1]}&atfLayout=list`
         
         console.log("--------------------------------------------------")
         console.log(url)
@@ -299,10 +299,3 @@ router.get('/amazon', function(req, res,next){
 
 module.exports = router;
 
-
-
-//https://images-eu.ssl-images-amazon.com/images/I/41U1z70fi-L._AC_US218_.jpg
-
-
-
-//https://images-eu.ssl-images-amazon.com/images/I/51xn3k9d0FL._AC_US218_.jpg
