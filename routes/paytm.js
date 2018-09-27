@@ -28,21 +28,20 @@ router.get('/paytm',function(req,res,next){
         "Origin": "https://paytmmall.com"
         }
 
-
-        //do someh=thing then response comes none. like literally none. Basically when the server blocks you!
     var response = axios({
         method: 'post',
         url: url_paytm,
         headers:headers
       })
     .then(function (response){
-        console.log("lol")
+        
         number_of_products = 0 
         var paytm_json_obj = {"paytm_product":[]};
         let products = response.data.grid_layout
         products.map(function(item, index){
             let product_name = item.name
-            let product_url = item.url
+            let product_url_middleware = item.newurl
+            let product_url = product_url_middleware.replace(/middleware\./gm, '');
             let product_price = item.offer_price
             let product_image_url = item.image_url
             console.log(product_name)
@@ -56,17 +55,27 @@ router.get('/paytm',function(req,res,next){
             
         
         })
-        
+        if (number_of_products == 0){
+            res.send(`Unable to find \" ${search_term}\". You might have misspelled it or the product is not available.`)
+        }
+        else{
         res.send(paytm_json_obj)
+        }
     })
     .catch(function(err){
-        console.log("eooooooo")
         console.log(err)
+        res.status(403)
+        res.send(JSON.stringify({error_message:"something went wrong!"}))
     })
 
 })
 
 module.exports = router;
+
+
+
+
+
 
 
 

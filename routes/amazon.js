@@ -34,7 +34,7 @@ router.get('/amazon', function(req, res,next){
     .then(function (response){
         //console.log(response.data)
         let amazon_webpage = response.data
-
+        //console.log(response.data)
         //if there is + in search, it will them be replaced by /+
         let search2 = search.replace(/\+/gm,'\\+')
         let regex_rh = new RegExp('rh=(.*?)&.*?'+ search2 , 'g')
@@ -59,7 +59,7 @@ router.get('/amazon', function(req, res,next){
             }
         
         var qid_value =  qid[1]
-        console.log("this is y,   ", qid[1])
+        console.log("this is qid_value,   ", qid[1])
         }
         else{
             console.log("No qid value")
@@ -91,25 +91,20 @@ router.get('/amazon', function(req, res,next){
     let response2 = axios({
         method: 'post',
         url: url,
-        headers:headers
+        //headers:headers
       })
     .then(function (response2) {
         //console.log(response)
-        console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
         let response_data = response2.data
-        //removing \n
         let amazon_json_obj = {"amazon_product":[]};
 
         let result = response_data.replace(/}\n&&&\n{/gm, ',');
         //removing the &&& in the end
         let result2 = result.replace(/&&&/gm,'')
         let json_response_data = JSON.parse(result2)
-        //console.log(result2)
-        console.log("pppppppppppppppppppppppppppppppppppppppppppppppppppp")
-        //scrapping the key having most of the products. 
-                
         
-        console.log("HELP")
+        //scrapping the key having most of the products. 
+        
         if (!("centerBelowPlus" in json_response_data)){
             let min_product_whitespace = json_response_data.centerMinus.data.value
             let min_products = min_product_whitespace.replace(/(\r\n\t|\n|\r\t)/gm,"");
@@ -123,7 +118,7 @@ router.get('/amazon', function(req, res,next){
 
             console.log("no data in min_products")
         }
-        else{
+        else if ("centerBelowPlus" in json_response_data && "centerMinus" in json_response_data ){
             console.log("all data ")
             //console.log(data_array[i])
             let min_product_whitespace = json_response_data.centerMinus.data.value
@@ -132,14 +127,20 @@ router.get('/amazon', function(req, res,next){
             let max_products = max_product_whitespace.replace(/(\r\n\t|\n|\r\t)/gm,"");
             var data_array = [max_products, min_products ]
         }
-        console.log("lol")
+        else{
+            console.log("No data. ")
+            //////Grab the searched value and then send it into the database of failed request. 
+            res.status(403)
+            res.send("something went wrong!")
+            return             
+        }
+        
         let i;
         var number_of_products = 0
         for (i in data_array){
             //console.log(data_array[i])
             let $ = cheerio.load(data_array[i])
-            var product_name = $('.s-access-title')
-        
+            var product_name = $('.s-access-title') 
             
             product_name.each(function(index,product){
                 var product_title = $(product).text()
@@ -175,7 +176,6 @@ router.get('/amazon', function(req, res,next){
                             regex.lastIndex++;
                         }
                         var product_url = url[1]
-                        console.log("????????????")
                     }
                     else{
                         console.log("no url found")
@@ -193,16 +193,14 @@ router.get('/amazon', function(req, res,next){
                     let beautify_html = pretty(data_array[i]);
                     if ((image_url = regex_image.exec(beautify_html))!== null) {
                         console.log("----------------------------------------------")
-                        // This is necessary to avoid infinite loops with zero-width matches
+                        
                         if (image_url.index === regex_image.lastIndex) {
                             regex_image.lastIndex++;
                         }
                         var product_image_url = image_url[1]
-                        console.log("99999999999999999999999999999999999999")
                         console.log(product_image_url)
-                        console.log("99999999999999999999999999999999999999")
-                        
                     }
+
                     else{
                         console.log("no image url found")
                         var product_image_url = 'image not available'
@@ -218,16 +216,12 @@ router.get('/amazon', function(req, res,next){
                             regex_price.lastIndex++;
                         }
                         var product_price = price[1]
-                        console.log(price[1])
-                        console.log("00000000000000000000")
                         console.log(product_price)
-                        console.log("00000000000000000000")
-                                    
                     }
+
                     else{
                         console.log("Unable to Grabbing price")
-                        var product_price = 'price not available'
-                        
+                        var product_price = 'price not available'    
                     }
 
                     //Grabbing ratings
@@ -255,44 +249,41 @@ router.get('/amazon', function(req, res,next){
                         console.log(product_ratings)
                         }
                         else{
-                            var product_ratings = "unable to find ratings string- span class=\"a-icon-alt\" "
+                            console.log("unable to find ratings string- span class=\"a-icon-alt\" ")
+                            var product_ratings = "unable to find ratings data"
                         }
                     
                     }
                     else{
                         console.log("Unable to grab ratings")
-                        //Do this for all the else statements so that code doesn't break. 
                         var product_ratings = "unable to find ratings data"
                     }
                     number_of_products = number_of_products+1
                     amazon_json_obj['amazon_product'].push({"product_name" : product_title, "product_url" :product_url, "product_image_url":product_image_url, "prodcut_price":product_price, "product_ratings": product_ratings  });
-                    amazon_json_obj["number_of_products"] = number_of_products
-                
-                
-                   
+                    amazon_json_obj["number_of_products"] = number_of_products  
                 }
             })
         }
     let json_str = JSON.stringify(amazon_json_obj)    
-    //this is all the data including html
     //res.send(json_response_data)
-    //this is all the poducts, links, images 
     res.send(json_str)
     //this is just the raw html 
-    //res.send(max_products)
-        
-
-      })
-      .catch(function(err){
-          console.log('this is error',err)
-      })
+    })
+    .catch(function(err){
+        console.log('this is error',err)
+        res.status(403)
+        res.send(JSON.stringify({error_message:"something went wrong!"}))
+    })
     
 
     })
         
     .catch(function(err){
-          console.log('this is error',err)
-      })
+        console.log('this is error',err)
+        res.status(403)
+        res.send(JSON.stringify({error_message:"something went wrong!"}))
+          
+    })
 })
 
 

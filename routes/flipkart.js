@@ -22,8 +22,6 @@ router.get('/flipkart', function(req,res){
         "Host":"www.flipkart.com",
         "Origin": "https://www.flipkart.com"
         }
-    
-        //headers = JSON.stringify(header)
                
     const payload = {
         "pageUri":"/search?q=sneakers+&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off",
@@ -34,7 +32,7 @@ router.get('/flipkart', function(req,res){
         }
         ,"requestContext":{
             "type":"BROWSE_PAGE","ssid":"77tw95kkog0000001537966890125","sqid":"j5lw9681gw0000001537966890125"}}
-    //payload = JSON.stringify(a)
+    
     var response = axios({
         method: 'post',
         url: url,
@@ -43,12 +41,9 @@ router.get('/flipkart', function(req,res){
       })
     .then(function (response) {
         var response_data = response.data
-
-        console.log("uo")
         
         var products = response_data.RESPONSE.slots
-        //lol = products[8].widget.data.products[0].productInfo.value.titles.title
-        //console.log(lol)
+    
         console.log(typeof(products))
         var number_of_products
         var flipkart_json_obj = {"flipkart_product":[]};
@@ -68,7 +63,7 @@ router.get('/flipkart', function(req,res){
                         if (!("products" in x)){
                             console.log("no products")
                         }
-                        else{
+                        else if ("products" in x){
                             let i 
                             for (i in x.products){
                                 console.log(i)
@@ -78,7 +73,7 @@ router.get('/flipkart', function(req,res){
                                 var total_rating_number = x.products[i].productInfo.value.rating.count // no of users who gave it rating 
                                 var product_url = x.products[i].productInfo.value.smartUrl
                                 var product_image = x.products[i].productInfo.value.media.images[0].url
-                                //console.log(product_image)
+                            
 
                                 const image_height = product_image.replace(/\{@height\}/gm, '832');
                                 const image_width = image_height.replace(/\{@width\}/gm, '832');
@@ -94,6 +89,9 @@ router.get('/flipkart', function(req,res){
                             
                             }
                         }
+                        else {
+                            res.send("No product or check if you spelled it correctly. ")
+                        }
                     }
                     console.log("_______________________________--")
                 }
@@ -106,6 +104,8 @@ router.get('/flipkart', function(req,res){
         })
     .catch(function(err){
         console.log(err)
+        res.status(403) 
+        res.send(JSON.stringify({error_message:"something went wrong!"}))
     })
       
       
