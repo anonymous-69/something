@@ -1,16 +1,21 @@
 var express = require('express')
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-mongoose.connect('mongodb://localhost/lol_db');
+//mongoose.connect('mongodb://localhost/lol_db');
 
 
 const ObjectId = Schema.ObjectId;
  
 const peopleSchema = new Schema({
-  //author: ObjectId,
-  name: { type: String, default: 'hahaha' },
-  body: { type: String, default: 'lol' },
-  age: { type: Number, min: 18, index: true }
+	site_Name :{
+		author: ObjectId,
+		name: { type: String, default: 'hahaha' },
+		body: { type: String, default: 'lol' },
+		
+	}, 
+	amazon:{
+		age: { type: String , default: 'hahaha'}
+	}
   //date: Date
 });
 

@@ -6,10 +6,10 @@ const cheerio = require('cheerio');
 const axios = require('axios')
 const JSON = require('circular-json');
 var request = require('request');
- 
+var rp = require('request-promise');
 
 router.get('/flipkart', function(req,res){
-    const url = "https://www.flipkart.com/api/4/page/fetch"
+    const url_flipkart = "https://www.flipkart.com/api/4/page/fetch"
     const headers =   {
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.5",
@@ -33,14 +33,17 @@ router.get('/flipkart', function(req,res){
         ,"requestContext":{
             "type":"BROWSE_PAGE","ssid":"77tw95kkog0000001537966890125","sqid":"j5lw9681gw0000001537966890125"}}
     
-    var response = axios({
-        method: 'post',
-        url: url,
+    rp({
+        method: 'POST',
+        url: url_flipkart,
+        proxy: 'http://190.81.162.134:53281',
         headers:headers,
-        data: payload
-      })
+        body:payload,
+        json: true,
+    })
     .then(function (response) {
-        var response_data = response.data
+        console.log("finally")
+        var response_data = response
         
         var products = response_data.RESPONSE.slots
     

@@ -6,14 +6,20 @@ const cheerio = require('cheerio');
 const axios = require('axios')
 const JSON = require('circular-json');
 const request = require('request');
-
+var rp = require('request-promise');
+const initial_data = require('../class_file')
 
 router.get('/paytm',function(req,res,next){
+    console.log(req.ip)
+
+
+    //initial_data.Database.
     console.log("hitting paytm route")
     const  search_term = "sneakers"
     var  number_of_products =  ""
     const  search = encodeURI(search_term);
     const url_paytm = `https://middleware.paytmmall.com/search?channel=web&child_site_id=6&site_id=2&version=2&userQuery=${search}&from=organic&cat_tree=1&page_count=1&items_per_page=32&resolution=960x720&quality=high&curated=1&_type=1`
+    //const url1 = "http://httpbin.org/ip"
     console.log(url_paytm)
     const headers = {
         "Accept": "*/*",
@@ -28,16 +34,23 @@ router.get('/paytm',function(req,res,next){
         "Origin": "https://paytmmall.com"
         }
 
-    var response = axios({
-        method: 'post',
+
+
+    rp({
+        method: 'POST',
         url: url_paytm,
-        headers:headers
-      })
+        proxy: 'http://190.81.162.134:53281',
+        headers:headers,
+        json: true
+    })
     .then(function (response){
+       
+
+        console.log("yo")
         
         number_of_products = 0 
         var paytm_json_obj = {"paytm_product":[]};
-        let products = response.data.grid_layout
+        let products = response.grid_layout
         products.map(function(item, index){
             let product_name = item.name
             let product_url_middleware = item.newurl

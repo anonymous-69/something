@@ -7,11 +7,13 @@ const axios = require('axios')
 const JSON = require('circular-json');
 const request = require('request');
 const pretty = require('pretty');
+var rp = require('request-promise');
 
 router.get('/amazon', function(req, res,next){
-     let search = 'ps4'
+    console.log("Hitting amazon API")
+     let search = 'xbox+games'
     //add payload to the amazon website. 
-    let url_amazon =  `https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}`
+    let url_amazon =  `https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}`
     //https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xiaomi&rh=i%3Aaps%2Ck%3Axiaomi
     let headers =   {
         "Accept-Language": "en-US,en;q=0.5",
@@ -26,14 +28,17 @@ router.get('/amazon', function(req, res,next){
         //add something 
     }
 
-    let response = axios({
-        method: 'post',
+    rp({
+        method: 'POST',
         url: url_amazon,
-        headers:headers
-      })
+        //proxy: 'http://190.81.162.134:53281',
+        headers:headers,
+        //Not parsing json like others as it is html. 
+        //json: true
+    })
     .then(function (response){
         //console.log(response.data)
-        let amazon_webpage = response.data
+        let amazon_webpage = response
         //console.log(response.data)
         //if there is + in search, it will them be replaced by /+
         let search2 = search.replace(/\+/gm,'\\+')
@@ -58,8 +63,8 @@ router.get('/amazon', function(req, res,next){
                 regex.lastIndex++;
             }
         
-        var qid_value =  qid[1]
-        console.log("this is qid_value,   ", qid[1])
+            var qid_value =  qid[1]
+            console.log("this is qid_value,   ", qid[1])
         }
         else{
             console.log("No qid value")
@@ -67,7 +72,7 @@ router.get('/amazon', function(req, res,next){
         }
         let z = encodeURIComponent("ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=books+")
         console.log(z)
-        let url =  `https://www.amazon.com/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}+&rh=${rh_value}&fromHash=${z}&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=${qid[1]}&atfLayout=list`
+        let url =  `https://www.amazon.in/mn/search/ajax/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}+&rh=${rh_value}&fromHash=${z}&section=ATF,BTF&fromApp=gp%2Fsearch&fromPage=results&fromPageConstruction=auisearch&version=2&oqid=${qid_value}&atfLayout=list`
         
         console.log("--------------------------------------------------")
         console.log(url)
@@ -91,7 +96,7 @@ router.get('/amazon', function(req, res,next){
     let response2 = axios({
         method: 'post',
         url: url,
-        //headers:headers
+        headers:headers
       })
     .then(function (response2) {
         //console.log(response)
