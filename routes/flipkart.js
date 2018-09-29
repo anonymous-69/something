@@ -7,8 +7,17 @@ const axios = require('axios')
 const JSON = require('circular-json');
 var request = require('request');
 var rp = require('request-promise');
+const initial_data = require('../send_data_to_db')
+
+
 
 router.get('/flipkart', function(req,res){
+    const search = "ps4 games " 
+    const ip = req.ip
+    const site = "flipkart.com" 
+    let user = new initial_data(ip, search, site)
+    user.user()
+    const  search_term = encodeURI(search);
     const url_flipkart = "https://www.flipkart.com/api/4/page/fetch"
     const headers =   {
         "Accept": "*/*",
@@ -24,7 +33,7 @@ router.get('/flipkart', function(req,res){
         }
                
     const payload = {
-        "pageUri":"/search?q=sneakers+&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off",
+        "pageUri":`/search?q=${search_term}&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off`,
         "pageContext":{
             "paginatedFetch":false,
             "pageNumber":1,
@@ -36,7 +45,7 @@ router.get('/flipkart', function(req,res){
     rp({
         method: 'POST',
         url: url_flipkart,
-        proxy: 'http://190.81.162.134:53281',
+        //proxy: 'http://190.81.162.134:53281',
         headers:headers,
         body:payload,
         json: true,

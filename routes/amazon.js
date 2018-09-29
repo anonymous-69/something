@@ -8,10 +8,18 @@ const JSON = require('circular-json');
 const request = require('request');
 const pretty = require('pretty');
 var rp = require('request-promise');
+const initial_data = require('../send_data_to_db')
 
 router.get('/amazon', function(req, res,next){
     console.log("Hitting amazon API")
-     let search = 'xbox+games'
+    //saving ip, search term, time and website in db. 
+    let search = 'xbox+games'
+    const ip = req.ip
+    const site = "amazon.in" 
+    let user = new initial_data(ip, search, site)
+    user.user()
+
+
     //add payload to the amazon website. 
     let url_amazon =  `https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=${search}`
     //https://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=xiaomi&rh=i%3Aaps%2Ck%3Axiaomi

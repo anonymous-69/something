@@ -6,18 +6,26 @@ const cheerio = require('cheerio');
 const axios = require('axios')
 const JSON = require('circular-json');
 const request = require('request');
-var rp = require('request-promise');
-const initial_data = require('../class_file')
+const  rp = require('request-promise')
+const  date = require('date-and-time');;
+const initial_data = require('../send_data_to_db')
+//import Database as database from '../class_file'
+
+
+
 
 router.get('/paytm',function(req,res,next){
-    console.log(req.ip)
 
-
-    //initial_data.Database.
     console.log("hitting paytm route")
-    const  search_term = "sneakers"
+    //Saving the IP, search term and the site name in the databse. 
+    let site = "paytm.com"
+    const search = "ps4 games"
+    const ip = req.ip
+    let user = new initial_data(ip, search, site)
+    user.user()
+
     var  number_of_products =  ""
-    const  search = encodeURI(search_term);
+    const  search_term = encodeURI(search);
     const url_paytm = `https://middleware.paytmmall.com/search?channel=web&child_site_id=6&site_id=2&version=2&userQuery=${search}&from=organic&cat_tree=1&page_count=1&items_per_page=32&resolution=960x720&quality=high&curated=1&_type=1`
     //const url1 = "http://httpbin.org/ip"
     console.log(url_paytm)
@@ -39,7 +47,7 @@ router.get('/paytm',function(req,res,next){
     rp({
         method: 'POST',
         url: url_paytm,
-        proxy: 'http://190.81.162.134:53281',
+        //proxy: 'http://190.81.162.134:53281',
         headers:headers,
         json: true
     })
@@ -69,13 +77,15 @@ router.get('/paytm',function(req,res,next){
         
         })
         if (number_of_products == 0){
-            res.send(`Unable to find \" ${search_term}\". You might have misspelled it or the product is not available.`)
+            res.send(JSON.stringify({"error": "Unable to find \""+ search +"\". You might have misspelled it or the product is not available."}))
         }
         else{
         res.send(paytm_json_obj)
         }
     })
     .catch(function(err){
+        let user_ = new initial_data(ip, search, site, true)
+        user_.user()
         console.log(err)
         res.status(403)
         res.send(JSON.stringify({error_message:"something went wrong!"}))
