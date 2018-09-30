@@ -101,8 +101,8 @@ class amazon_product_properties{
 
 	    }
 	    else{
-	        console.log(product_property +'URL not available')
-	        let property = product_property +'URL not available'
+	        console.log(this.product_property +'URL not available')
+	        let property = this.product_property +'URL not available'
 	        return property
 	        
 	    }

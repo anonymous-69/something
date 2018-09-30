@@ -17,7 +17,7 @@ router.get('/paytm',function(req,res,next){
     console.log("hitting paytm route")
     //Saving the IP, search term and the site name in the databse. 
     let site = "paytm.com"
-    const search = "ps4 games"
+    const search = "gaming headphones"
     const ip = req.ip
     let user = new initial_data(ip, search, site)
     user.user()

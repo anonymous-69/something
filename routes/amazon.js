@@ -9,8 +9,6 @@ const request = require('request');
 const pretty = require('pretty');
 const rp = require('request-promise');
 
-
-
 //Importing the functions and classes. 
 const initial_data = require('../send_data_to_db')
 const find_rh_value = require('../functions/amazon_functions_webpage')
@@ -21,10 +19,16 @@ const ratings = require('../functions/amazon_functions_api')
 const amazon_product_properties = require('../functions/amazon_functions_api')
 const header = require("../functions/headers")
 
+
+
+
+
+
+
 router.get('/amazon', function(req, res,next){
     console.log("Hitting amazon API")
     //saving ip, search term, time and website in db. 
-    let search = 'ps4+games'
+    let search = 'water bottles'
     const ip = req.ip
     const site = "amazon.in" 
     let user = new initial_data(ip, search, site)
