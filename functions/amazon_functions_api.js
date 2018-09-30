@@ -1,5 +1,13 @@
-//scrapping the key having most of the products. 
+const express = require('express');
+const router = express.Router();
+const Regex = require('regex');
+const axios = require('axios')
+const JSON = require('circular-json');
+const pretty = require('pretty');
+const initial_data = require('../send_data_to_db')
 
+
+//scrapping the key having most of the products. 
 function json_key_with_data(json_response_data2){
 
 	if (!("centerBelowPlus" in json_response_data2)){
@@ -18,7 +26,6 @@ function json_key_with_data(json_response_data2){
     }
     else if ("centerBelowPlus" in json_response_data2 && "centerMinus" in json_response_data2 ){
         console.log("all data ")
-        //console.log(data_array[i])
         let min_product_whitespace = json_response_data2.centerMinus.data.value
         let max_product_whitespace = json_response_data2.centerBelowPlus.data.value
         let min_products = min_product_whitespace.replace(/(\r\n\t|\n|\r\t)/gm,"");
@@ -28,13 +35,15 @@ function json_key_with_data(json_response_data2){
     }
     else{
         console.log("No data. ")
-        //////Grab the searched value and then send it into the database of failed request. 
+        let user_ = new initial_data(ip, search, site, true)
+        user_.user()
         res.send("No product or check if you spelled it correctly. ")
         return            
     }
 
 }
-	
+
+
 function escaping_characters(product_title){
 	let newData0 = product_title.replace(/\(/gm,'\\(')
     let newData1 = newData0.replace(/\//gm,'\\/')
@@ -46,29 +55,6 @@ function escaping_characters(product_title){
     let newData7 = newData6.replace(/\./gm,'//.')
     return newData7
 }
-//Grabbing URL
-function product_url(product_name){
-
-	const regex_url = new RegExp('<a .*? title=\"' + product_name +  '\\".*?href=\\"(.*?)\\">' , 'g')
-    console.log(regex_url)
-    let url
-    if ((url = regex_url.exec(data_array[i])) !== null) {
-        if (url.index === regex_url.lastIndex) {
-            regex.lastIndex++;
-        }
-        let product_url = url[1]
-        return product_url
-
-    }
-    else{
-        console.log("no url found")
-        let product_url = 'URL not available'
-        return product_url
-        
-    }
-}
-
-
 
 function product_image(product_name){
 	const regex_image = new RegExp('<img src=\\"(.*?)\\" srcset=\\".*?\\" width=\\".*?\\" height=\\".*?\\" alt=\\"'+ product_name + '\\"', 'g' )
@@ -94,14 +80,76 @@ function product_image(product_name){
     }
 }
 
+ 
+class amazon_product_properties{
+	constructor(regex,data_array, product_property ){
+		this.regex = regex, 
+		this.data_array = data_array
+		this.product_property = product_property
+	}
+
+	product_properties(){
+		let x;
+		console.log(this.regex)
+		if ((x = this.regex.exec(this.data_array)) !== null) {
+	        if (x.index === this.regex.lastIndex) {
+	            regex.lastIndex++;
+	        }
+	        let property = x[1]
+	        console.log(property)
+	        return property
+
+	    }
+	    else{
+	        console.log(product_property +'URL not available')
+	        let property = product_property +'URL not available'
+	        return property
+	        
+	    }
+
+	}
+}
+
+
+function ratings(product_name, data_array){
+	const regex_rating = new RegExp('>' + product_name + '<.*?(.*?) out of 5', 'gm')
+    let rating;
+    if ((rating = regex_rating.exec(data_array))!== null) {
+
+        if (rating.index === regex_rating.lastIndex) {
+            regex_rating.lastIndex++;
+        }
+        //rating gives some long ass string.   
+        let ratings_string = rating[1].split(" ").splice(-1)[0];
+        // ratings_string gives span class="a-icon-alt"
+        let regex_rating_number = /.*?>(.*)/gm;
+        let rating_number
+        if ((rating_number = regex_rating_number.exec(ratings_string))!== null) {
+
+            if (rating_number.index === regex_rating_number.lastIndex) {
+                regex_rating_number.lastIndex++;
+            }
+        
+        var product_ratings = rating_number[1]
+        console.log(product_ratings)
+        }
+        else{
+            console.log("unable to find ratings string- span class=\"a-icon-alt\" ")
+            var product_ratings = "unable to find ratings data"
+        }
+    
+    }
+    else{
+        console.log("Unable to grab ratings")
+        var product_ratings = "unable to find ratings data"
+    }
+}
 
 
 
-
-
-//
-module.exports.product_url = product_url
-module.exports.product_image = product_image
-module.exports.product_url = product_url
+module.exports = amazon_product_properties
+//module.exports.product_url = product_url
+module.exports.ratings = ratings
+//module.exports.product_url = product_url
 module.exports.escaping_characters = escaping_characters
 module.exports.json_key_with_data = json_key_with_data

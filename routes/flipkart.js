@@ -8,7 +8,7 @@ const JSON = require('circular-json');
 var request = require('request');
 var rp = require('request-promise');
 const initial_data = require('../send_data_to_db')
-
+var header = require("../functions/headers")
 
 
 router.get('/flipkart', function(req,res){
@@ -19,18 +19,7 @@ router.get('/flipkart', function(req,res){
     user.user()
     const  search_term = encodeURI(search);
     const url_flipkart = "https://www.flipkart.com/api/4/page/fetch"
-    const headers =   {
-        "Accept": "*/*",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
-        "X-user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36 FKUA/website/41/website/Desktop",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Referer": "https://www.flipkart.com/home-kitchen/home-appliances/washing-machines/semi-automatic-top-load~function/pr?sid=j9e%2Cabm%2C8qx&otracker=nmenu_sub_TVs+and+Appliances_0_Semi+Automatic+Top+Load&p%5B%5D=facets.ideal_for_family_size%255B%255D%3DFamily%2Bof%2B3&page=3",
-        "Connection": "keep-alive",
-        "Host":"www.flipkart.com",
-        "Origin": "https://www.flipkart.com"
-        }
+    const headers = header.headers.flipkart_headers 
                
     const payload = {
         "pageUri":`/search?q=${search_term}&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off`,
@@ -51,12 +40,9 @@ router.get('/flipkart', function(req,res){
         json: true,
     })
     .then(function (response) {
-        console.log("finally")
         var response_data = response
         
         var products = response_data.RESPONSE.slots
-    
-        console.log(typeof(products))
         var number_of_products
         var flipkart_json_obj = {"flipkart_product":[]};
         var number_of_products = 0
@@ -115,6 +101,8 @@ router.get('/flipkart', function(req,res){
         res.send(json_str)
         })
     .catch(function(err){
+        let user_ = new initial_data(ip, search, site, true)
+        user_.user()
         console.log(err)
         res.status(403) 
         res.send(JSON.stringify({error_message:"something went wrong!"}))
@@ -124,28 +112,3 @@ router.get('/flipkart', function(req,res){
 })
 
 module.exports = router;
-
-
-
-        //iphone 
-        //"ssid":"hdeulcnzio0000001537687391769",
-        //"sqid":"oh1lu4h7nk0000001537687391769"
-        
-
-        //note 8 
-        //"ssid":"hdeulcnzio0000001537687391769",
-        //"sqid":"ecf7a7u1740000001537687475137"
-
-
-        //washiong machine 
-        //"ssid":"ekoo69k30w0000001537687475138",
-        //"sqid":"rv5dv6geg00000001537687532008"
-
-        //jbl speakers 
-        //"ssid":"v2nvb6kahs0000001537687532008",
-        //"sqid":"rucjnz4a1s0000001537687658226"
-
-        //F&D speakers 
-        //"ssid":"ba2ykk1khs0000001537687701532",
-        //"sqid":"leq6atohow0000001537687728192"
-
