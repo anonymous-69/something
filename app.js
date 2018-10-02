@@ -15,9 +15,10 @@ const app = express()
 
 
 
-mongoose.connect(keys.mongodb.dbURI, function(){
-	console.log("connected to mongo")
-})
+mongoose.connect('mongodb:27017/docker-node-mongo', 
+	{ useNewUrlParser:true }) 
+.then(() => console.log("connected to mongodb"))
+.catch(err =>console.log(err))
 
 
 
@@ -181,7 +182,8 @@ app.use(function( req,res,next){
 
 
 
+const PORT = 6000;
+const HOST = '0.0.0.0';
 
-app.listen(4000, '0.0.0.0', function(){
-	console.log("server started on port 4000....")
-})
+app.listen(PORT, HOST);
+console.log(`Running on http://${HOST}:${PORT}`);
